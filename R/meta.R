@@ -28,15 +28,17 @@ getMetaGenericOne <- function(path, tagsFilter) {
   fileNames <-
     path |>
     dir() |>
-    stringr::str_subset("([:alpha:]+\\d+)+([:alpha:]+)?\\.(csv|json)")
+    stringr::str_subset("^([^\\d\\.]+\\d+)+([^\\d\\.]+)?\\.(csv|json)$")
 
-  tags <- stringr::str_extract_all(fileNames |> stringr::str_extract("\\w+"), "[:alpha:]+")
+  fileNamesWoEnding <- stringr::str_remove(fileNames, "\\.(csv|json)$")
+  tags <- stringr::str_extract_all(fileNamesWoEnding, "[^\\d\\.]+")
 
   sel <- sapply(tags, \(tg) all(tg %in% tagsFilter))
   fileNames <- fileNames[sel]
+  fileNamesWoEnding <- fileNamesWoEnding[sel]
   tags <- tags[sel]
 
-  nums <- stringr::str_extract_all(fileNames |> stringr::str_extract("\\w+"), "\\d+")
+  nums <- stringr::str_extract_all(fileNamesWoEnding, "\\d+")
 
   tagsConcat <- sapply(tags, paste, collapse="_")
   ids <- unique(tagsConcat)
