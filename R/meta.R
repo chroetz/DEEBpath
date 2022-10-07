@@ -28,29 +28,32 @@ getMetaGenericOne <- function(path, tagsFilter) {
   fileNames <-
     path |>
     dir() |>
-    stringr::str_subset("^([^\\d\\.]+\\d+)+([^\\d\\.]+)?\\.(csv|json)$")
+    stringr::str_subset("^([^\\d\\._]+[\\d_]+)+([^\\d\\._]+)?\\.(csv|json)$")
 
   fileNamesWoEnding <- stringr::str_remove(fileNames, "\\.(csv|json)$")
-  tags <- stringr::str_extract_all(fileNamesWoEnding, "[^\\d\\.]+")
+  tags <- stringr::str_extract_all(fileNamesWoEnding, "[^\\d\\._]+")
 
   sel <- sapply(tags, \(tg) all(tg %in% tagsFilter))
   fileNames <- fileNames[sel]
   fileNamesWoEnding <- fileNamesWoEnding[sel]
   tags <- tags[sel]
 
-  nums <- stringr::str_extract_all(fileNamesWoEnding, "\\d+")
+  nums <- stringr::str_extract_all(fileNamesWoEnding, "[\\d_]+")
 
-  tagsConcat <- sapply(tags, paste, collapse="_")
+  tagsConcat <- sapply(tags, paste, collapse="0")
   ids <- unique(tagsConcat)
 
   metaList <- lapply(ids, \(id) {
     sel <- tagsConcat == id
     fullPaths <- normalizePath(file.path(path, fileNames[sel]))
     tg <- tags[sel][[1]]
-    nm <- nums[sel] |> unlist() |> as.integer() |> matrix(ncol = sum(sel)) |> t() |> as.data.frame()
+    nm <- unlist(nums[sel])
+    nm[nm == "_"] <- NA
+    nm <- nm |> as.integer() |> matrix(ncol = sum(sel)) |> t() |> as.data.frame()
     meta <- cbind(fullPaths, nm)
     colnames(meta) <- c(paste0(tg[length(tg)], "Path"), paste0(tg[1:ncol(nm)], "Nr"))
     meta <- tibble::as_tibble(meta)
+    meta <- dplyr::select(meta, where(~!all(is.na(.)))) # TODO: where() will be exported from tidyselect in the future
     return(meta)
   })
 
@@ -59,12 +62,28 @@ getMetaGenericOne <- function(path, tagsFilter) {
 
 
 #' @export
-getMetaGeneric <- function(paths, tagsFilter = c("task", "esti", "truth", "obs")) {
+getMetaGeneric <- function(
+    paths,
+    tagsFilter = c("task", "esti", "truth", "obs"),
+    nrFilters = NULL
+) {
   paths <- normalizePath(paths, mustWork=TRUE)
   paths <- unique(paths)
   metaList <- lapply(paths, getMetaGenericOne, tagsFilter=tagsFilter) |> unlist(recursive=FALSE)
   colCount <- sapply(metaList, ncol)
   meta <- Reduce(fullJoinMeta, metaList[order(colCount, decreasing=TRUE)])
+  if (!tibble::is_tibble(meta) || nrow(meta) == 0) {
+    stop(
+      "Could not find any meta files in paths\n -",
+      paste(paths, collapse="\n -"),
+      "\nwith tags ",
+      paste(tagsFilter, collapse=", "))
+  }
+  for (i in seq_along(nrFilters)) {
+    nm <- names(nrFilters)[i]
+    if (!nm %in% colnames(meta)) next
+    meta <- meta[meta[[nm]] %in% nrFilters[[i]], ]
+  }
   meta <- dplyr::relocate(meta, dplyr::ends_with("Nr"), dplyr::ends_with("Path"))
   return(meta)
 }
