@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @import stringr
 #' @importFrom rlang .data .env
 "_PACKAGE"
 

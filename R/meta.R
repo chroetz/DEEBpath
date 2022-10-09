@@ -3,9 +3,9 @@ getFileMeta <- function(path, pattern, ...) {
   fileNames <-
     path |>
     dir() |>
-    stringr::str_subset(pattern)
+    str_subset(pattern)
   if (length(fileNames) == 0) return(NULL)
-  parts <- stringr::str_match(fileNames, pattern)[,-1,drop=FALSE]
+  parts <- str_match(fileNames, pattern)[,-1,drop=FALSE]
   partsLst <- apply(parts, 2, asNumericConditional, simplify=FALSE)
   names(partsLst) <- c(...)
   meta <- dplyr::bind_cols(
@@ -28,17 +28,17 @@ getMetaGenericOne <- function(path, tagsFilter) {
   fileNames <-
     path |>
     dir() |>
-    stringr::str_subset("^([^\\d\\._]+[\\d_]+)+([^\\d\\._]+)?\\.(csv|json)$")
+    str_subset("^([^\\d\\._]+[\\d_]+)+([^\\d\\._]+)?\\.(csv|json)$")
 
-  fileNamesWoEnding <- stringr::str_remove(fileNames, "\\.(csv|json)$")
-  tags <- stringr::str_extract_all(fileNamesWoEnding, "[^\\d\\._]+")
+  fileNamesWoEnding <- str_remove(fileNames, "\\.(csv|json)$")
+  tags <- str_extract_all(fileNamesWoEnding, "[^\\d\\._]+")
 
   sel <- sapply(tags, \(tg) all(tg %in% tagsFilter))
   fileNames <- fileNames[sel]
   fileNamesWoEnding <- fileNamesWoEnding[sel]
   tags <- tags[sel]
 
-  nums <- stringr::str_extract_all(fileNamesWoEnding, "[\\d_]+")
+  nums <- str_extract_all(fileNamesWoEnding, "[\\d_]+")
 
   tagsConcat <- sapply(tags, paste, collapse="0")
   ids <- unique(tagsConcat)
