@@ -33,7 +33,7 @@ getMetaGenericOne <- function(path, tagsFilter) {
   fileNamesWoEnding <- str_remove(fileNames, "\\.(csv|json)$")
   tags <- str_extract_all(fileNamesWoEnding, "[^\\d\\._]+")
 
-  sel <- sapply(tags, \(tg) all(tg %in% tagsFilter))
+  sel <- vapply(tags, \(tg) all(tg %in% tagsFilter), FUN.VALUE=logical(1))
   fileNames <- fileNames[sel]
   fileNamesWoEnding <- fileNamesWoEnding[sel]
   tags <- tags[sel]

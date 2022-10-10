@@ -9,7 +9,7 @@ loadPathsInInfo <- function(info) {
     nmWoPath <- substr(nm, 1, nchar(nm)-4)
     if (!is.null(info[[nmWoPath]])) next
     if (endsWith(path, ".csv")) {
-      info[[nmWoPath]] <- DEEBtrajs::readTrajs(path)
+      info[[nmWoPath]] <- DEEBtrajs::readTrajsOrDerivTrajs(path)
     } else if (endsWith(path, ".json")) {
       info[[nmWoPath]] <- ConfigOpts::readOptsBare(path)
     }
