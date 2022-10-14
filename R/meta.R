@@ -82,6 +82,7 @@ getMetaGeneric <- function(
   for (i in seq_along(nrFilters)) {
     nm <- names(nrFilters)[i]
     if (!nm %in% colnames(meta)) next
+    if (is.null(nrFilters[[nm]])) next
     meta <- meta[meta[[nm]] %in% nrFilters[[i]], ]
   }
   meta <- dplyr::relocate(meta, dplyr::ends_with("Nr"), dplyr::ends_with("Path"))
