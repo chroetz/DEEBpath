@@ -11,9 +11,9 @@ getParenthesisFileNameData <- function(path) {
   fileNames <-
     path |>
     dir() |>
-    str_subset("^(\\w+\\(\\w+\\))+\\.\\w+$")
+    str_subset("^([^\\(]+\\([^\\)]+\\))+\\.[^\\.]+$")
 
-  elements <- str_extract_all(fileNames, "(\\w+\\(\\w+\\))")
+  elements <- str_extract_all(fileNames, "([^\\(]+\\([^\\)]+\\))")
   lapply(seq_along(fileNames), \(i) {
     ele <- elements[[i]]
     keys <- getKeys(ele)
@@ -26,10 +26,10 @@ getParenthesisFileNameData <- function(path) {
 }
 
 getKeys <- function(strs) {
-  str_extract(strs, "\\w+")
+  str_extract(strs, "[^\\(]+(?=\\()")
 }
 
 getValues <- function(strs) {
-  str_extract(strs, "(?<=\\()\\w+(?=\\))")
+  str_extract(strs, "(?<=\\()[^\\)]+(?=\\))")
 }
 
