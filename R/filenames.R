@@ -144,6 +144,11 @@ evalDataFile <- function(info=NULL, taskNr=NULL, method = NULL, ending = TRUE) {
 }
 
 #' @export
+getScoreFiles <- function(path) {
+  dir(path, "task\\d+.*_eval.csv", full.names = TRUE)
+}
+
+#' @export
 hyperParmsFile <- function(info=NULL, truthNr=NULL, obsNr=NULL, ending = FALSE) {
   info <- as.list(info)
   if (is.null(truthNr)) truthNr <- info$truthNr
