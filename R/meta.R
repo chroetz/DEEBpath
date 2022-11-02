@@ -65,7 +65,8 @@ getMetaGenericOne <- function(path, tagsFilter) {
 getMetaGeneric <- function(
     paths,
     tagsFilter = c("task", "esti", "truth", "obs"),
-    nrFilters = NULL
+    nrFilters = NULL,
+    removeNa = FALSE
 ) {
   paths <- normalizePath(paths, mustWork=TRUE)
   paths <- unique(paths)
@@ -84,6 +85,9 @@ getMetaGeneric <- function(
     if (!nm %in% colnames(meta)) next
     if (is.null(nrFilters[[nm]])) next
     meta <- meta[meta[[nm]] %in% nrFilters[[i]], ]
+  }
+  if (removeNa) {
+    meta <- tidyr::drop_na(meta)
   }
   meta <- dplyr::relocate(meta, dplyr::ends_with("Nr"), dplyr::ends_with("Path"))
   return(meta)
