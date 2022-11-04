@@ -5,6 +5,7 @@ isDeebDb <- function(path) {
   all(c("truth", "observation", "task") %in% folders)
 }
 
+#' @export
 getUniqueDbEntries <- function(dbPath, example) {
   models <- list.dirs(path = dbPath, full.names = FALSE, recursive = FALSE)
   modelPaths <- file.path(dbPath, models, if (example) "example" else "")
