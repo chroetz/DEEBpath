@@ -13,6 +13,7 @@ Imports:
     ConfigOpts,
     DEEBtrajs,
     dplyr,
+    readr,
     rlang,
     stringr,
     tibble,
