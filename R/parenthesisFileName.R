@@ -1,5 +1,7 @@
 #' @export
 parenthesisFileName <- function(pairs = list(...), ..., .ending=NULL) {
+  pairs <- pairs[sapply(pairs, length) > 0]
+  stopifnot(all(sapply(pairs, length) == 1))
   fileName <- paste(paste0(names(pairs), "(", sapply(pairs, as.character), ")"), collapse="")
   if (!is.null(.ending)) fileName <- paste0(fileName, ".", .ending)
   return(fileName)

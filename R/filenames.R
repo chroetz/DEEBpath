@@ -170,3 +170,45 @@ hyperParmsFile <- function(info=NULL, truthNr=NULL, obsNr=NULL, ending = FALSE) 
   }
   return(fileName)
 }
+
+#' @export
+smoothFile <- function(info=NULL, truthNr=NULL, obsNr=NULL, ending = TRUE) {
+  info <- as.list(info)
+  if (is.null(truthNr)) truthNr <- info$truthNr
+  if (is.null(obsNr)) obsNr <- info$obsNr
+  stopifnot(!is.null(truthNr))
+  stopifnot(!is.null(obsNr))
+  n <- max(length(truthNr), length(obsNr))
+  stopifnot(length(truthNr) == n || length(truthNr) == 1)
+  stopifnot(length(obsNr) == n || length(obsNr) == 1)
+  truthNr <- as.integer(truthNr)
+  obsNr <- as.integer(obsNr)
+  stopifnot(!any(is.na(truthNr)))
+  stopifnot(!any(is.na(obsNr)))
+  fileName <- sprintf("truth%04dobs%04dsmooth", truthNr, obsNr)
+  if (isTRUE(ending)) {
+    fileName <- paste0(fileName, ".csv")
+  } else if (is.character(ending)) {
+    fileName <- paste0(fileName, ending)
+  }
+  return(fileName)
+}
+
+
+#' @export
+plotsDir <- function(info=NULL, dbPath=NULL, example=NULL, model=NULL) {
+  info <- as.list(info)
+  if (is.null(dbPath)) dbPath <- info$dbPath
+  if (is.null(example)) example <- info$example
+  if (is.null(model)) model <- info$model
+  stopifnot(length(dbPath) == 1)
+  stopifnot(length(example) == 1)
+  stopifnot(length(model) == 1)
+  if (example) {
+    modelPath <- file.path(dbPath, model, "example")
+  } else {
+    modelPath <- file.path(dbPath, model)
+  }
+  dirPath <- file.path(modelPath, "evaluation", "plots")
+  return(dirPath)
+}

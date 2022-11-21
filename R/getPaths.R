@@ -9,6 +9,7 @@ getPaths <- function(dbPath, model, example = FALSE) {
     truth = file.path(modelPath, "truth"),
     esti = file.path(modelPath, "estimation"),
     eval = file.path(modelPath, "evaluation"),
+    plots = file.path(modelPath, "evaluation", "plots"),
     example = if (example) NULL else file.path(modelPath, "example"),
     task = file.path(modelPath, "task"),
     obs = file.path(modelPath, "observation"),
