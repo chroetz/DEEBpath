@@ -194,6 +194,29 @@ smoothFile <- function(info=NULL, truthNr=NULL, obsNr=NULL, ending = TRUE) {
   return(fileName)
 }
 
+#' @export
+validationErrorFile <- function(info=NULL, truthNr=NULL, obsNr=NULL, ending = TRUE) {
+  info <- as.list(info)
+  if (is.null(truthNr)) truthNr <- info$truthNr
+  if (is.null(obsNr)) obsNr <- info$obsNr
+  stopifnot(!is.null(truthNr))
+  stopifnot(!is.null(obsNr))
+  n <- max(length(truthNr), length(obsNr))
+  stopifnot(length(truthNr) == n || length(truthNr) == 1)
+  stopifnot(length(obsNr) == n || length(obsNr) == 1)
+  truthNr <- as.integer(truthNr)
+  obsNr <- as.integer(obsNr)
+  stopifnot(!any(is.na(truthNr)))
+  stopifnot(!any(is.na(obsNr)))
+  fileName <- sprintf("truth%04dobs%04dvalidationError", truthNr, obsNr)
+  if (isTRUE(ending)) {
+    fileName <- paste0(fileName, ".csv")
+  } else if (is.character(ending)) {
+    fileName <- paste0(fileName, ending)
+  }
+  return(fileName)
+}
+
 
 #' @export
 plotsDir <- function(info=NULL, dbPath=NULL, example=NULL, model=NULL) {
