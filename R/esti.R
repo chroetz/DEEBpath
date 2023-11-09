@@ -1,6 +1,8 @@
 #' @export
 getModels <- function(dbPath, modelPattern=NULL) {
-  models <- list.dirs(dbPath, full.names = FALSE, recursive=FALSE)
+  models <-
+    list.dirs(dbPath, full.names = FALSE, recursive=FALSE) |>
+    stringr::str_subset("^_", negate=TRUE)
   if (!is.null(modelPattern)) {
     models <- grep(modelPattern, models, value=TRUE)
   }

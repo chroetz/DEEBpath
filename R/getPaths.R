@@ -16,4 +16,3 @@ getPaths <- function(dbPath, model, example = FALSE) {
     runOpts = file.path(modelPath, "Opts_Run.json")
   )
 }
-
