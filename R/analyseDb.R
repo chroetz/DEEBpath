@@ -1,13 +1,17 @@
 #' @export
 isDeebDb <- function(path) {
-  models <- list.dirs(path = path, full.names = FALSE, recursive = FALSE)
+  models <-
+    list.dirs(path = path, full.names = FALSE, recursive = FALSE) |>
+    stringr::str_subset("^_", negate=TRUE)
   folders <- list.dirs(path = file.path(path, models[1]), full.names = FALSE, recursive = FALSE)
   all(c("truth", "observation", "task") %in% folders)
 }
 
 #' @export
-getUniqueDbEntries <- function(dbPath, example) {
-  models <- list.dirs(path = dbPath, full.names = FALSE, recursive = FALSE)
+getUniqueEntriesForEval <- function(dbPath, example) {
+  models <-
+    list.dirs(path = dbPath, full.names = FALSE, recursive = FALSE) |>
+    stringr::str_subset("^_", negate=TRUE)
   modelPaths <- file.path(dbPath, models, if (example) "example" else "")
   methods <- unique(unlist(lapply(
     file.path(modelPaths, "estimation"),
@@ -49,6 +53,33 @@ getUniqueDbEntries <- function(dbPath, example) {
     scoreFunctions = scoreFunctions
   ))
 }
+
+#' @export
+getUniqueTruthNrs <- function(dbPath, modelFilter = NULL, obsNrFilter = NULL) {
+  models <-
+    list.dirs(path = dbPath, full.names = FALSE, recursive = FALSE) |>
+    stringr::str_subset("^_", negate=TRUE)
+  if (!is.null(modelFilter)) models <- intersect(models, modelFilter)
+  modelPaths <- file.path(dbPath, models)
+  truthFiles <- unique(unlist(lapply(
+    file.path(modelPaths, "truth"),
+    list.files,
+    pattern = "obs\\d+truth\\d+\\.csv",
+    full.names = FALSE, recursive = FALSE)))
+  truthNrs <-
+    truthFiles |>
+    stringr::str_extract("(?<=truth)(\\d+)") |>
+    as.integer()
+  if (!is.null(obsNrFilter)) {
+    obsNrs <-
+      truthFiles |>
+      stringr::str_extract("(?<=obs)(\\d+)") |>
+      as.integer()
+    truthNrs <- truthNrs[obsNrs %in% obsNrFilter]
+  }
+  return(unique(truthNrs))
+}
+
 
 #' @export
 getNew <- function(dbPath, example=FALSE) {

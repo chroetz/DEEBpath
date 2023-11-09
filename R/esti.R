@@ -19,28 +19,12 @@ getObservationNrs <- function(dbPath, model, obsNrFilter = NULL) {
 }
 
 #' @export
-getMethodOptsDirSpecific <- function(methodOptsDir, model, obsNr) {
-  file.path(methodOptsDir, sprintf("obs%04d", obsNr), model)
+getMethodFile <- function(dbPath, method) {
+  file.path(dbPath, "_hyper", paste0(method, ".json"))
 }
 
 #' @export
-getEstiOptsPath <- function(methodOptsDirSpecific) {
-  file.path(methodOptsDirSpecific, "Opts_Estimation.json")
+getEstiOptsPath <- function(dbPath, model) {
+  #TODO
+  file.path(dbPath, "_hyper", "Opts_Estimation.json")
 }
-
-#' @export
-getHyperParmsFiles <- function(methodOptsDirSpecific, methodPattern = NULL) {
-  hpFiles <- list.files(methodOptsDirSpecific, pattern = "^Opts_List_HyperParms_.*\\.json$")
-  if (!is.null(methodPattern)){
-    hpFiles <- grep(methodPattern, hpFiles, value=TRUE)
-  }
-  return(hpFiles)
-}
-
-
-#' @export
-getHyperParmsPath <- function(methodOptsDirSpecific, method) {
-  path <- file.path(methodOptsDirSpecific, sprintf("Opts_List_HyperParms_%s.json", method))
-  return(path)
-}
-

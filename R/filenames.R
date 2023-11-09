@@ -66,20 +66,47 @@ parmsFile <- function(info=NULL, truthNr=NULL, ending = FALSE) {
 }
 
 #' @export
-obsTruthFile <- function(info=NULL, truthNr=NULL, ending = TRUE) {
+obsTruthFile <- function(info=NULL, truthNr=NULL, obsNr=NULL, ending = TRUE) {
+
   info <- as.list(info)
+
   if (is.null(truthNr)) truthNr <- info$truthNr
   stopifnot(!is.null(truthNr))
   truthNr <- as.integer(truthNr)
-  stopifnot(!any(is.na(truthNr)))
-  fileName <- sprintf("obs_truth%04d", truthNr)
+  stopifnot(!any(is.na(obsNr)))
+
+  if (is.null(obsNr)) obsNr <- info$obsNr
+  stopifnot(!is.null(obsNr))
+  obsNr <- as.integer(obsNr)
+  stopifnot(!any(is.na(obsNr)))
+
+  fileName <- sprintf("obs%04dtruth%04d", obsNr, truthNr)
   if (isTRUE(ending)) {
     fileName <- paste0(fileName, ".csv")
   } else if (is.character(ending)) {
     fileName <- paste0(fileName, ending)
   }
+
   return(fileName)
 }
+
+
+#' @export
+truthFile <- function(info=NULL, truthNr=NULL, ending = TRUE) {
+  info <- as.list(info)
+  if (is.null(truthNr)) truthNr <- info$truthNr
+  stopifnot(!is.null(truthNr))
+  truthNr <- as.integer(truthNr)
+  stopifnot(!any(is.na(truthNr)))
+  fileName <- sprintf("truth%04d", truthNr)
+  if (isTRUE(ending)) {
+    fileName <- paste0(fileName, ".rds")
+  } else if (is.character(ending)) {
+    fileName <- paste0(fileName, ending)
+  }
+  return(fileName)
+}
+
 
 #' @export
 taskTruthFile <- function(info=NULL, truthNr=NULL, taskNr=NULL, ending = TRUE) {
