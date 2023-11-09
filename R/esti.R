@@ -1,6 +1,6 @@
 #' @export
 getModels <- function(dbPath, modelPattern=NULL) {
-  list.dirs(dbPath, full.names = FALSE, recursive=FALSE)
+  models <- list.dirs(dbPath, full.names = FALSE, recursive=FALSE)
   if (!is.null(modelPattern)) {
     models <- grep(modelPattern, models, value=TRUE)
   }
@@ -8,16 +8,19 @@ getModels <- function(dbPath, modelPattern=NULL) {
 }
 
 #' @export
-getObservationNrs <- function(dbPath, model) {
+getObservationNrs <- function(dbPath, model, obsNrFilter = NULL) {
   paths <- getPaths(dbPath, model)
   meta <- getMetaGeneric(paths$obs)
   obsNrs <- meta$obsNr |> unique()
+  if (!is.null(obsNrFilter)) {
+    obsNrs <- intersect(obsNrs, obsNrFilter)
+  }
   return(obsNrs)
 }
 
 #' @export
 getMethodOptsDirSpecific <- function(methodOptsDir, model, obsNr) {
-  file.path(methodOptsDir, model, sprintf("obs%04d", obsNr))
+  file.path(methodOptsDir, sprintf("obs%04d", obsNr), model)
 }
 
 #' @export
@@ -26,11 +29,18 @@ getEstiOptsPath <- function(methodOptsDirSpecific) {
 }
 
 #' @export
-getHyperParmsPaths <- function(methodOptsDirSpecific, methodPattern = NULL) {
+getHyperParmsFiles <- function(methodOptsDirSpecific, methodPattern = NULL) {
   hpFiles <- list.files(methodOptsDirSpecific, pattern = "^Opts_List_HyperParms_.*\\.json$")
   if (!is.null(methodPattern)){
     hpFiles <- grep(methodPattern, hpFiles, value=TRUE)
   }
   return(hpFiles)
+}
+
+
+#' @export
+getHyperParmsPath <- function(methodOptsDirSpecific, method) {
+  path <- file.path(methodOptsDirSpecific, sprintf("Opts_List_HyperParms_%s.json", method))
+  return(path)
 }
 
