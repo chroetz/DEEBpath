@@ -23,7 +23,7 @@ asNumericConditional <- function(x) {
   return(z)
 }
 
-getMetaGenericOne <- function(path, tagsFilter) {
+getMetaGenericOne <- function(path, tagsFilter, tagFileFilter) {
 
   fileNames <-
     path |>
@@ -33,7 +33,28 @@ getMetaGenericOne <- function(path, tagsFilter) {
   fileNamesWoEnding <- str_remove(fileNames, "\\.(csv|json|rds)$")
   tags <- str_extract_all(fileNamesWoEnding, "[^\\d\\._]+")
 
-  sel <- vapply(tags, \(tg) all(tg %in% tagsFilter), FUN.VALUE=logical(1))
+  if (!is.null(tagsFilter)) {
+    sel1 <- vapply(tags, \(tg) all(tg %in% tagsFilter), FUN.VALUE=logical(1))
+  } else {
+    sel1 <- TRUE
+  }
+  if (!is.null(tagFileFilter)) {
+    sel2 <- vapply(
+      tags,
+      \(tg) {
+        any(
+          vapply(
+            tagFileFilter,
+            \(filt) all(tg == filt),
+            FUN.VALUE=logical(1))
+        )
+      },
+      FUN.VALUE=logical(1))
+  } else {
+    sel2 <- TRUE
+  }
+  sel <- sel1 & sel2
+
   fileNames <- fileNames[sel]
   fileNamesWoEnding <- fileNamesWoEnding[sel]
   tags <- tags[sel]
@@ -65,12 +86,20 @@ getMetaGenericOne <- function(path, tagsFilter) {
 getMetaGeneric <- function(
     paths,
     tagsFilter = c("task", "esti", "truth", "obs"),
+    tagFileFilter = NULL,
     nrFilters = NULL,
     removeNa = FALSE
 ) {
   paths <- normalizePath(paths, mustWork=TRUE)
   paths <- unique(paths)
-  metaList <- lapply(paths, getMetaGenericOne, tagsFilter=tagsFilter) |> unlist(recursive=FALSE)
+  metaList <-
+    lapply(
+      paths,
+      getMetaGenericOne,
+      tagsFilter = tagsFilter,
+      tagFileFilter = tagFileFilter
+    ) |>
+      unlist(recursive=FALSE)
   colCount <- sapply(metaList, ncol)
   meta <- Reduce(fullJoinMeta, metaList[order(colCount, decreasing=TRUE)])
   if (!tibble::is_tibble(meta) || nrow(meta) == 0) {
