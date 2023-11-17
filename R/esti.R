@@ -26,7 +26,9 @@ getMethodFile <- function(dbPath, method) {
 }
 
 #' @export
-getEstiOptsPath <- function(dbPath, model) {
-  #TODO
-  file.path(dbPath, "_hyper", "Opts_Estimation.json")
+getEstiOptsPath <- function(dbPath, model, fileName=NULL) {
+  if (is.null(fileName))
+    file.path(dbPath, "_hyper", "Opts_Estimation.json")
+  else
+    file.path(dbPath, "_hyper", fileName)
 }
