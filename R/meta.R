@@ -74,7 +74,7 @@ getMetaGenericOne <- function(path, tagsFilter, tagFileFilter) {
     meta <- cbind(fullPaths, nm)
     colnames(meta) <- c(paste0(tg[length(tg)], "Path"), paste0(tg[1:ncol(nm)], "Nr"))
     meta <- tibble::as_tibble(meta)
-    meta <- dplyr::select(meta, where(~!all(is.na(.)))) # TODO: where() will be exported from tidyselect in the future
+    meta <- dplyr::select(meta, tidyselect::where(~!all(is.na(.))))
     return(meta)
   })
 
@@ -103,11 +103,12 @@ getMetaGeneric <- function(
   colCount <- sapply(metaList, ncol)
   meta <- Reduce(fullJoinMeta, metaList[order(colCount, decreasing=TRUE)])
   if (!tibble::is_tibble(meta) || nrow(meta) == 0) {
-    stop(
+    warning(
       "Could not find any meta files in paths\n -",
       paste(paths, collapse="\n -"),
       "\nwith tags ",
       paste(tagsFilter, collapse=", "))
+    return(NULL)
   }
   for (i in seq_along(nrFilters)) {
     nm <- names(nrFilters)[i]

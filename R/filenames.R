@@ -246,19 +246,13 @@ validationErrorFile <- function(info=NULL, truthNr=NULL, obsNr=NULL, ending = TR
 
 
 #' @export
-plotsDir <- function(info=NULL, dbPath=NULL, example=NULL, model=NULL) {
+plotsDir <- function(info=NULL, dbPath=NULL, model=NULL) {
   info <- as.list(info)
   if (is.null(dbPath)) dbPath <- info$dbPath
-  if (is.null(example)) example <- info$example
   if (is.null(model)) model <- info$model
   stopifnot(length(dbPath) == 1)
-  stopifnot(length(example) == 1)
   stopifnot(length(model) == 1)
-  if (example) {
-    modelPath <- file.path(dbPath, model, "example")
-  } else {
-    modelPath <- file.path(dbPath, model)
-  }
+  modelPath <- file.path(dbPath, model)
   dirPath <- file.path(modelPath, "evaluation", "plots")
   return(dirPath)
 }

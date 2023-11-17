@@ -6,9 +6,9 @@ isDeebDb <- function(path) {
 }
 
 #' @export
-getUniqueEntriesForEval <- function(dbPath, example = FALSE) {
+getUniqueEntriesForEval <- function(dbPath) {
   models <- getModels(dbPath)
-  modelPaths <- file.path(dbPath, models, if (example) "example" else "")
+  modelPaths <- file.path(dbPath, models)
   methods <- unique(unlist(lapply(
     file.path(modelPaths, "estimation"),
     list.dirs,
@@ -88,23 +88,22 @@ getUniqueTruthNrs <- function(dbPath, modelFilter = NULL, obsNrFilter = NULL) {
 
 
 #' @export
-getNew <- function(dbPath, example=FALSE) {
+getNew <- function(dbPath) {
   models <-  getModels(dbPath)
   unevaled <- lapply(models, \(model) {
-    path <- getPaths(dbPath, model, example=example)
+    path <- getPaths(dbPath, model)
     methods <- list.dirs(path$esti, full.names = FALSE, recursive = FALSE)
     meta <- lapply(methods, \(method) {
       methodEstiPath <- file.path(path$esti, method)
       if (!dir.exists(methodEstiPath)) return(NULL)
       meta <- getMetaGeneric(methodEstiPath)
+      if (NROW(meta) == 0) return(NULL)
       meta$method <- method
       meta$estiPath <- NULL
       return(meta)
     }) |>
       dplyr::bind_rows()
-    if (NROW(meta) == 0) {
-      return(NULL)
-    }
+    if (NROW(meta) == 0) return(NULL)
     scoreFiles <- getScoreFiles(path$eval)
     scores <-
       lapply(scoreFiles, \(sf) {
@@ -121,6 +120,5 @@ getNew <- function(dbPath, example=FALSE) {
     unevaled
   }) |>
     dplyr::bind_rows()
-  unevaled$example <- example
   return(unevaled)
 }
