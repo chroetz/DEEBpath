@@ -63,7 +63,9 @@ getUniqueEntriesForEval <- function(dbPath) {
 }
 
 #' @export
-getUniqueTruthNrs <- function(dbPath, modelFilter = NULL, obsNrFilter = NULL) {
+getUniqueTruthNrs <- function(
+    dbPath, modelFilter = NULL, obsNrFilter = NULL
+) {
   models <-  getModels(dbPath)
   if (!is.null(modelFilter)) models <- intersect(models, modelFilter)
   modelPaths <- file.path(dbPath, models)

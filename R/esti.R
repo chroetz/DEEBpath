@@ -29,6 +29,10 @@ getMethodFile <- function(dbPath, method) {
 getEstiOptsPath <- function(dbPath, model, fileName=NULL) {
   if (is.null(fileName))
     file.path(dbPath, "_hyper", "Opts_Estimation.json")
-  else
-    file.path(dbPath, "_hyper", fileName)
+  else {
+    file.path(
+      dbPath,
+      "_hyper",
+      if (endsWith(fileName, ".json")) fileName else paste0(fileName, ".json"))
+  }
 }
