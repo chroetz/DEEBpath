@@ -26,13 +26,29 @@ getMethodFile <- function(dbPath, method) {
 }
 
 #' @export
-getEstiOptsPath <- function(dbPath, model, fileName=NULL) {
-  if (is.null(fileName))
-    file.path(dbPath, "_hyper", "Opts_Estimation.json")
-  else {
-    file.path(
-      dbPath,
-      "_hyper",
-      if (endsWith(fileName, ".json")) fileName else paste0(fileName, ".json"))
-  }
+getMethodPaths <- function(methodOptsDir) {
+  paths <- list.files(methodOptsDir, pattern = "\\.json$")
+  sel <- sapply(paths, isHyperParmFile) | sapply(paths, isHyperParmListFile)
+  return(normalizePath(paths[sel]))
 }
+
+#' @export
+isHyperParmFile <- function(path) {
+  opts <- tryCatch(
+    ConfigOpts::readOptsBare(path),
+    error = \(cond) FALSE)
+  if (!ConfigOpts::isOpts(opts)) return(FALSE)
+  return(ConfigOpts::getClassAt(opts, 1) == "HyperParms")
+}
+
+
+#' @export
+isHyperParmListFile <- function(path) {
+  opts <- tryCatch(
+    ConfigOpts::readOptsBare(path),
+    error = \(cond) FALSE)
+  if (!ConfigOpts::isOpts(opts)) return(FALSE)
+  if (!ConfigOpts::getClassAt(opts, 1) == "List") return(FALSE)
+  return(ConfigOpts::getClassAt(opts, 2) == "HyperParms")
+}
+

@@ -7,7 +7,6 @@ getMethodTableHyper <- function(dbPath) {
       model = readr::col_character(),
       obs = readr::col_character(),
       method = readr::col_character(),
-      estiOpts = readr::col_character(),
       timeInMinutes = readr::col_integer()
     ))
   return(methods)

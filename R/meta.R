@@ -45,7 +45,7 @@ getMetaGenericOne <- function(path, tagsFilter, tagFileFilter) {
         any(
           vapply(
             tagFileFilter,
-            \(filt) all(tg == filt),
+            \(filt) length(tg) == length(filt) && all(tg == filt),
             FUN.VALUE=logical(1))
         )
       },
