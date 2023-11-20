@@ -11,3 +11,18 @@ getPaths <- function(dbPath, model) {
     runOpts = file.path(modelPath, "Opts_Run.json")
   )
 }
+
+#' @export
+summaryDir <- function(dbPath) {
+  file.path(dbPath, "_summary")
+}
+
+#' @export
+summaryTablePath <- function(dbPath) {
+  file.path(summaryDir(dbPath), "scores.csv")
+}
+
+#' @export
+summaryHyperPath <- function(dbPath, model, methodBase) {
+  file.path(summaryDir(dbPath), paste0(model, "_", methodBase, ".csv"))
+}
