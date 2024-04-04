@@ -25,3 +25,11 @@ getMethodTable <- function(dbPath, methodTableNames) {
     dplyr::bind_rows()
   return(methodTable)
 }
+
+
+#' @export
+getTargetMethodAndScore <- function(dbPath) {
+  path <- file.path(dbPath, "_hyper", "_targetMethodAndScore.csv")
+  table <- readr::read_csv(path, col_types = readr::cols())
+  return(table)
+}
