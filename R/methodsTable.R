@@ -28,8 +28,8 @@ getMethodTable <- function(dbPath, methodTableNames) {
 
 
 #' @export
-getTargetMethodAndScore <- function(dbPath) {
-  path <- file.path(dbPath, "_hyper", "_targetMethodAndScore.csv")
+getTargetTaskAndScore <- function(dbPath) {
+  path <- file.path(dbPath, "_hyper", "_targetTaskAndScore.csv")
   table <- readr::read_csv(path, col_types = readr::cols())
   return(table)
 }

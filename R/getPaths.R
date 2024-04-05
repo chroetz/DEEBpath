@@ -26,3 +26,13 @@ summaryTablePath <- function(dbPath) {
 summaryHyperPath <- function(dbPath, model, methodBase) {
   file.path(summaryDir(dbPath), paste0(model, "_", methodBase, ".csv"))
 }
+
+
+#' @export
+getRanMethodOptsPath <- function(dbPath, model, method) {
+  paths <- getPaths(dbPath, model)
+  dirPath <- file.path(paths$esti, method)
+  optsFilePaths <- list.files(dirPath, "^Opts_HyperParms.*\\.json$", full.names=TRUE)
+  return(optsFilePaths)
+}
+
