@@ -31,7 +31,8 @@ getMethodTable <- function(dbPath, methodTableNames) {
     left_join(tibble(model = names(obsNames), obsNames = obsNames), join_by(model)) |>
     mutate(obs = lapply(seq_along(obs), \(i) str_subset(obsNames[[i]], obs[i]))) |>
     select(-obsNames) |>
-    tidyr::unnest(obs)
+    tidyr::unnest(obs) |>
+    distinct()
   methodTable <-
     methodTable |>
     left_join(loadSlurmTimeTable(dbPath), join_by(method))
