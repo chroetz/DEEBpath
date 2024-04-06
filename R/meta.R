@@ -8,9 +8,9 @@ getFileMeta <- function(path, pattern, ...) {
   parts <- str_match(fileNames, pattern)[,-1,drop=FALSE]
   partsLst <- apply(parts, 2, asNumericConditional, simplify=FALSE)
   names(partsLst) <- c(...)
-  meta <- dplyr::bind_cols(
+  meta <- bind_cols(
     path = normalizePath(file.path(path, fileNames)),
-    tibble::as_tibble(partsLst))
+    as_tibble(partsLst))
   return(meta)
 }
 
@@ -73,8 +73,8 @@ getMetaGenericOne <- function(path, tagsFilter, tagFileFilter) {
     nm <- nm |> as.integer() |> matrix(ncol = sum(sel)) |> t() |> as.data.frame()
     meta <- cbind(fullPaths, nm)
     colnames(meta) <- c(paste0(tg[length(tg)], "Path"), paste0(tg[1:ncol(nm)], "Nr"))
-    meta <- tibble::as_tibble(meta)
-    meta <- dplyr::select(meta, tidyselect::where(~!all(is.na(.))))
+    meta <- as_tibble(meta)
+    meta <- select(meta, tidyselect::where(~!all(is.na(.))))
     return(meta)
   })
 
@@ -117,7 +117,7 @@ getMetaGeneric <- function(
     meta <- meta[meta[[nm]] %in% nrFilters[[i]], ]
   }
   if (removeNa) {
-    meta <- tidyr::drop_na(meta)
+    meta <- drop_na(meta)
   }
   meta <- dplyr::relocate(meta, dplyr::ends_with("Nr"), dplyr::ends_with("Path"))
   return(meta)
@@ -126,10 +126,10 @@ getMetaGeneric <- function(
 fullJoinMeta <- function(x, y) {
   common <- intersect(names(x), names(y))
   if (length(common) == 0) {
-    dplyr::bind_cols(
+    bind_cols(
       x[rep(seq_len(nrow(x)), each = nrow(y)), ],
       y[rep(seq_len(nrow(y)), times = nrow(x)), ])
   } else {
-    dplyr::full_join(x, y, by = common)
+    full_join(x, y, by = common)
   }
 }

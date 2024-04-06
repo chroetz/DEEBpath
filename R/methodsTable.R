@@ -13,16 +13,25 @@ getMethodTable <- function(dbPath, methodTableNames) {
   colTypes <- readr::cols(
     model = readr::col_character(),
     obs = readr::col_character(),
-    method = readr::col_character(),
-    timeInMinutes = readr::col_integer()
+    method = readr::col_character()
   )
-  methodTable <-
+  methodTableRegex <-
     lapply(
       methodsTableFiles,
       readr::read_csv,
       col_types = colTypes
     ) |>
-    dplyr::bind_rows()
+    bind_rows()
+  models <- getModels(dbPath)
+  obsNames <- getObsNames(dbPath)
+  methodTable <-
+    methodTableRegex |>
+    mutate(model = lapply(model, \(mdl) str_subset(models, mdl))) |>
+    tidyr::unnest(model) |>
+    left_join(tibble(model = names(obsNames), obsNames = obsNames), join_by(model)) |>
+    mutate(obs = lapply(seq_along(obs), \(i) str_subset(obsNames[[i]], obs[i]))) |>
+    select(-obsNames) |>
+    tidyr::unnest(obs)
   return(methodTable)
 }
 

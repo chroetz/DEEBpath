@@ -20,7 +20,7 @@ getUniqueEntriesForEval <- function(dbPath) {
     full.names = FALSE, recursive = FALSE)))
   truthNrs <-
     truthFiles |>
-    stringr::str_extract("(?<=truth)(\\d+)") |>
+    str_extract("(?<=truth)(\\d+)") |>
     as.integer() |>
     unique()
   obsFiles <- unique(unlist(lapply(
@@ -30,7 +30,7 @@ getUniqueEntriesForEval <- function(dbPath) {
     full.names = FALSE, recursive = FALSE)))
   obsNrs <-
     obsFiles |>
-    stringr::str_extract("(?<=obs)(\\d+)") |>
+    str_extract("(?<=obs)(\\d+)") |>
     as.integer() |>
     unique()
   taskFiles <- unique(unlist(lapply(
@@ -40,7 +40,7 @@ getUniqueEntriesForEval <- function(dbPath) {
     full.names = FALSE, recursive = FALSE)))
   taskNrs <-
     taskFiles |>
-    stringr::str_extract("(?<=task)(\\d+)") |>
+    str_extract("(?<=task)(\\d+)") |>
     as.integer() |>
     unique()
   scoreFunctions <- unique(unlist(lapply(
@@ -76,12 +76,12 @@ getUniqueTruthNrs <- function(
     full.names = FALSE, recursive = FALSE)))
   truthNrs <-
     truthFiles |>
-    stringr::str_extract("(?<=truth)(\\d+)") |>
+    str_extract("(?<=truth)(\\d+)") |>
     as.integer()
   if (!is.null(obsNrFilter)) {
     obsNrs <-
       truthFiles |>
-      stringr::str_extract("(?<=obs)(\\d+)") |>
+      str_extract("(?<=obs)(\\d+)") |>
       as.integer()
     truthNrs <- truthNrs[obsNrs %in% obsNrFilter]
   }
@@ -104,7 +104,7 @@ getNew <- function(dbPath) {
       meta$estiPath <- NULL
       return(meta)
     }) |>
-      dplyr::bind_rows()
+      bind_rows()
     if (NROW(meta) == 0) return(NULL)
     scoreFiles <- getScoreFiles(path$eval)
     scores <-
@@ -112,15 +112,15 @@ getNew <- function(dbPath) {
         scores <- readr::read_csv(sf, col_types = readr::cols())
         scores[c("method", "truthNr", "obsNr", "taskNr")]
       }) |>
-      dplyr::bind_rows()
+      bind_rows()
     if (NROW(scores) != 0) {
-      unevaled <- dplyr::anti_join(meta, scores, by = c("truthNr", "obsNr", "taskNr", "method"))
+      unevaled <- anti_join(meta, scores, by = c("truthNr", "obsNr", "taskNr", "method"))
     } else {
       unevaled <- meta
     }
     unevaled$model <- model
     unevaled
   }) |>
-    dplyr::bind_rows()
+    bind_rows()
   return(unevaled)
 }
