@@ -33,15 +33,25 @@ getMethodTable <- function(dbPath, methodTableNames) {
     select(-obsNames) |>
     tidyr::unnest(obs) |>
     distinct()
-  methodTable <-
-    methodTable |>
-    left_join(loadSlurmTimeTable(dbPath), join_by(method))
+  slurmTimeTable <- loadSlurmTimeTable(dbPath)
+  if (is.null(slurmTimeTable)) {
+    methodTable$timeInMinutes <- 60
+  } else {
+    methodTable <-
+      methodTable |>
+      left_join(loadSlurmTimeTable(dbPath), join_by(method)) |>
+      mutate(timeInMinutes = ifelse(is.na(timeInMinutes), 60, timeInMinutes))
+  }
   return(methodTable)
 }
 
 
 loadSlurmTimeTable <- function(dbPath) {
   filePath <- file.path(dbPath, "_hyper", "slurmTime.csv")
+  if (!file.exists(filePath)) {
+    cat("slurmTime.csv not found. Using always default time for jobs.")
+    return(NULL)
+  }
   readr::read_csv(
     filePath,
     col_types = readr::cols(
