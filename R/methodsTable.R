@@ -32,8 +32,23 @@ getMethodTable <- function(dbPath, methodTableNames) {
     mutate(obs = lapply(seq_along(obs), \(i) str_subset(obsNames[[i]], obs[i]))) |>
     select(-obsNames) |>
     tidyr::unnest(obs)
+  methodTable <-
+    methodTable |>
+    left_join(loadSlurmTimeTable(dbPath), join_by(method))
   return(methodTable)
 }
+
+
+loadSlurmTimeTable <- function(dbPath) {
+  filePath <- file.path(dbPath, "_hyper", "slurmTime.csv")
+  readr::read_csv(
+    filePath,
+    col_types = readr::cols(
+      method = readr::col_character(),
+      timeInMinutes = readr::col_integer()
+    ))
+}
+
 
 
 #' @export
