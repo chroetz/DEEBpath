@@ -13,6 +13,7 @@ getOpenTruthNrs <- function(
   } else {
     hyperParmsPath <- getMethodFile(dbPath, method)
     hyperParmsList <- ConfigOpts::readOptsBare(hyperParmsPath)
+    if (nchar(hyperParmsList$name) == 0) hyperParmsList$name <- basename(method)
     hyperParmsList <- ConfigOpts::expandList(hyperParmsList)
     hyperParms <- hyperParmsList$list[[expansionNr]]
     methodName <- nameWithHash(hyperParmsList$name, hyperParms)
