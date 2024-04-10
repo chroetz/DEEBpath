@@ -1,8 +1,14 @@
 #' @export
-getMethodTableNames <- function(dbPath) {
-  methodTableFiles <- list.files(
+getMethodTableNames <- function(dbPath, auto = FALSE) {
+  methodTableFilePaths <- list.files(
     file.path(dbPath, "_hyper"),
-    pattern = "^methods.*\\.csv$")
+    pattern = "^methods.*\\.csv$",
+    full.names = TRUE)
+  if (auto) {
+    i <- which.max(file.mtime(methodTableFilePaths))
+    methodTableFilePaths <- methodTableFilePaths[i]
+  }
+  methodTableFiles <- basename(methodTableFilePaths)
   return(methodTableFiles)
 }
 
