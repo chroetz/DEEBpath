@@ -3,6 +3,7 @@
 export(estiFile)
 export(evalDataFile)
 export(getFileMeta)
+export(getLogDir)
 export(getMetaGeneric)
 export(getMethodFile)
 export(getMethodPaths)

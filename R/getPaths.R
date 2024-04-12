@@ -36,3 +36,14 @@ getRanMethodOptsPath <- function(dbPath, model, method) {
   return(optsFilePaths)
 }
 
+#' @export
+getLogDir <- function(dbPath = NULL, relative = FALSE) {
+  stopifnot(is.logical(relative))
+  stopifnot(length(relative) == 1)
+  if (relative) {
+    return("_log")
+  }
+  stopifnot(is.character(dbPath))
+  stopifnot(length(dbPath) == 1)
+  normalizePath(file.path(dbPath, "_log"), mustWork = FALSE)
+}
