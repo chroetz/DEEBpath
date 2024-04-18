@@ -19,8 +19,23 @@ getObsNameFromNr <- function(dbPath, model, obsNr) {
 
 #' @export
 getObsNamesOfModel <- function(dbPath, model) {
-  runOpts <- ConfigOpts::readOptsBare(getPaths(dbPath, model)$runOpts)
-  sapply(runOpts$observation$list, \(entry) entry$name)
+  runOptsPath <- getPaths(dbPath, model)$runOpts
+  if (file.exists(runOptsPath)) {
+    runOpts <- ConfigOpts::readOptsBare(runOptsPath)
+    sapply(runOpts$observation$list, \(entry) entry$name)
+  } else {
+    modelPath <- file.path(dbPath, model)
+    obsFiles <- list.files(
+      file.path(modelPath, "observation"),
+      pattern = "truth\\d+obs\\d+\\.csv",
+      full.names = FALSE, recursive = FALSE)
+    obsNrs <-
+      obsFiles |>
+      str_extract("(?<=obs)(\\d+)") |>
+      as.integer() |>
+      unique()
+    as.character(obsNrs)
+  }
 }
 
 #' @export
