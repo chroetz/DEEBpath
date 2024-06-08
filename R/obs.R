@@ -8,6 +8,7 @@ getObsNrFromName <- function(dbPath, model, obsName) {
 
 #' @export
 getObsNameFromNr <- function(dbPath, model, obsNr) {
+  if (length(dbPath) == 0 || length(model) == 0) return(character())
   stopifnot(length(unique(dbPath)) == 1)
   stopifnot(length(unique(model)) == 1)
   dbPath <- dbPath[[1]]
