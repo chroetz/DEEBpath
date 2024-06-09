@@ -1,7 +1,7 @@
 #' @export
 getMethodTableNames <- function(dbPath, auto = FALSE) {
   methodTableFilePaths <- list.files(
-    file.path(dbPath, "_hyper"),
+    hyperDir(),
     pattern = "^methods.*\\.csv$",
     full.names = TRUE)
   if (auto) {
@@ -15,7 +15,7 @@ getMethodTableNames <- function(dbPath, auto = FALSE) {
 
 #' @export
 getMethodTable <- function(dbPath, methodTableNames) {
-  methodsTableFiles <- file.path(dbPath, "_hyper", methodTableNames)
+  methodsTableFiles <- file.path(hyperDir(), methodTableNames)
   colTypes <- readr::cols(
     model = readr::col_character(),
     obs = readr::col_character(),
@@ -53,7 +53,7 @@ getMethodTable <- function(dbPath, methodTableNames) {
 
 
 loadSlurmTimeTable <- function(dbPath) {
-  filePath <- file.path(dbPath, "_hyper", "slurmTime.csv")
+  filePath <- file.path(hyperDir(), "slurmTime.csv")
   if (!file.exists(filePath)) {
     cat("slurmTime.csv not found. Using always default time for jobs.")
     return(NULL)
@@ -70,7 +70,7 @@ loadSlurmTimeTable <- function(dbPath) {
 
 #' @export
 getTargetTaskAndScore <- function(dbPath) {
-  path <- file.path(dbPath, "_hyper", "_targetTaskAndScore.csv")
+  path <- file.path(hyperDir(), "_targetTaskAndScore.csv")
   table <- readr::read_csv(path, col_types = readr::cols())
   return(table)
 }

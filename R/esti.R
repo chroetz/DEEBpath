@@ -22,7 +22,7 @@ getObservationNrs <- function(dbPath, model, obsNrFilter = NULL) {
 
 #' @export
 getMethodFile <- function(dbPath, method) {
-  file.path(dbPath, "_hyper", paste0(method, ".json"))
+  file.path(hyperDir(), paste0(method, ".json"))
 }
 
 #' @export

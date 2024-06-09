@@ -13,6 +13,11 @@ getPaths <- function(dbPath, model) {
 }
 
 #' @export
+hyperDir <- function(dbPath) {
+  file.path(dbPath, "_hyper")
+}
+
+#' @export
 summaryDir <- function(dbPath) {
   file.path(dbPath, "_summary")
 }
