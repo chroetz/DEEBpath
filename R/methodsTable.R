@@ -38,7 +38,10 @@ getMethodTable <- function(dbPath, methodTableNames) {
     mutate(obs = lapply(seq_along(obs), \(i) str_subset(obsNames[[i]], obs[i]))) |>
     select(-obsNames) |>
     tidyr::unnest(obs) |>
-    distinct()
+    distinct() |>
+    rename(methodFile = method) |>
+    mutate(method = methodNameFromMethodFile(methodFile))
+
   slurmTimeTable <- loadSlurmTimeTable(dbPath)
   if (is.null(slurmTimeTable)) {
     methodTable$timeInMinutes <- 60
@@ -66,6 +69,21 @@ loadSlurmTimeTable <- function(dbPath) {
     ))
 }
 
+
+methodNameFromMethodFile <- function(methodFiles) {
+  methodNames <- character(length(methodFiles))
+  for (i in seq_along(methodFiles)) {
+    methodFile <- methodFiles[i]
+    hyperParmsPath <- getMethodFile(dbPath, methodFile)
+    hyperParmsList <- ConfigOpts::readOptsBare(hyperParmsPath)
+    if (nchar(hyperParmsList$name) > 0) {
+      methodNames[i] <- hyperParmsList$name
+    } else {
+      methodNames[i] <- methodFile
+    }
+  }
+  return(methodNames)
+}
 
 
 #' @export

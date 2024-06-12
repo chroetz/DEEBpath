@@ -4,16 +4,16 @@ getOpenTruthNrs <- function(
     truthNrFilter,
     obsNr,
     model,
-    method,
+    methodFile,
     expansionNr = NULL
 ) {
   paths <- getPaths(dbPath, model)
   if (is.null(expansionNr)) {
-    methodName <- method
+    methodName <- methodFile
   } else {
-    hyperParmsPath <- getMethodFile(dbPath, method)
+    hyperParmsPath <- getMethodFile(dbPath, methodFile)
     hyperParmsList <- ConfigOpts::readOptsBare(hyperParmsPath)
-    if (nchar(hyperParmsList$name) == 0) hyperParmsList$name <- basename(method)
+    if (nchar(hyperParmsList$name) == 0) hyperParmsList$name <- basename(methodFile)
     hyperParmsList <- ConfigOpts::expandList(hyperParmsList)
     hyperParms <- hyperParmsList$list[[expansionNr]]
     methodName <- nameWithHash(hyperParmsList$name, hyperParms)
