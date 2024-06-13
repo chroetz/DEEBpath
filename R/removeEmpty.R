@@ -7,8 +7,9 @@ removeEmptyMethodFolders <- function(dbPath, removeNonCsvFolders = FALSE) {
   for (model in models) {
     cat("MODEL:", model, "\n")
     paths <- getPaths(dbPath, model)
-    allDirs <- list.dirs(paths$esti)
+    allDirs <- list.files(paths$esti, full.names = TRUE, include.dirs = TRUE)
     for (dir in allDirs) {
+      if (!dir.exists(dir)) next
       files <- list.files(dir)
       if (length(files) == 0) {
         cat("Folder", dir, "is empty. Removing... ")
