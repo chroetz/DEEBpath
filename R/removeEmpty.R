@@ -19,7 +19,7 @@ removeEmptyMethodFolders <- function(dbPath, removeNonCsvFolders = FALSE) {
         next
       }
       if (removeNonCsvFolders) {
-        files <- str_subset(files, "\\.csv^", negate=TRUE)
+        files <- str_subset(files, "\\.csv$", negate=TRUE)
         if (length(files) == 0) {
           cat("Folder", dir, "no csv", files, ". Removing... ")
           unlink(dir, recursive = TRUE, force = TRUE)
