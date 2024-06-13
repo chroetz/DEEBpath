@@ -40,7 +40,7 @@ getMethodTable <- function(dbPath, methodTableNames) {
     tidyr::unnest(obs) |>
     distinct() |>
     rename(methodFile = method) |>
-    mutate(method = methodNameFromMethodFile(methodFile))
+    mutate(method = methodNameFromMethodFile(dbPath, methodFile))
 
   slurmTimeTable <- loadSlurmTimeTable(dbPath)
   if (is.null(slurmTimeTable)) {
@@ -70,7 +70,7 @@ loadSlurmTimeTable <- function(dbPath) {
 }
 
 
-methodNameFromMethodFile <- function(methodFiles) {
+methodNameFromMethodFile <- function(dbPath, methodFiles) {
   methodNames <- character(length(methodFiles))
   for (i in seq_along(methodFiles)) {
     methodFile <- methodFiles[i]
