@@ -1,4 +1,4 @@
-#' works with list and environment
+# works with list and environment
 #' @export
 loadPathsInInfo <- function(info) {
   selPath <- endsWith(names(info), "Path")

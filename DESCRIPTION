@@ -12,6 +12,7 @@ RoxygenNote: 7.3.1
 Imports: 
     ConfigOpts,
     DEEBtrajs,
+    DEEButil,
     dplyr,
     readr,
     rlang,

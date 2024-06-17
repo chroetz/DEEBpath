@@ -82,7 +82,7 @@ estiInfoFile <- function(info=NULL, truthNr=NULL, obsNr=NULL, ending = TRUE) {
   stopifnot(!any(is.na(obsNr)))
   fileName <- sprintf("truth%04dobs%04dinfo", truthNr, obsNr)
   if (isTRUE(ending)) {
-    fileName <- paste0(fileName, "csv")
+    fileName <- paste0(fileName, ".csv")
   } else if (is.character(ending)) {
     fileName <- paste0(fileName, ending)
   }
@@ -197,8 +197,13 @@ evalDataFile <- function(info=NULL, taskNr=NULL, method = NULL, ending = TRUE) {
 }
 
 #' @export
-getScoreFiles <- function(path) {
-  dir(path, "task\\d+.*_eval.csv", full.names = TRUE)
+getScoreFiles <- function(path, methodFilter = NULL) {
+  files <- dir(path, "^task\\d+.*_eval\\.csv$", full.names = FALSE)
+  if (hasValue(methodFilter)) {
+    methodsAvailable <- str_extract(files, "^task\\d+(.*)_eval\\.csv$", group = 1)
+    files <- files[methodsAvailable %in% methodFilter]
+  }
+  return(normalizePath(file.path(path, files)))
 }
 
 #' @export

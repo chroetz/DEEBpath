@@ -91,7 +91,7 @@ getUniqueTruthNrs <- function(
 
 #' @export
 getNew <- function(dbPath) {
-  models <-  getModels(dbPath)
+  models <- getModels(dbPath)
   unevaled <- lapply(models, \(model) {
     path <- getPaths(dbPath, model)
     methods <- list.dirs(path$esti, full.names = FALSE, recursive = FALSE)
