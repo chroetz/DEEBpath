@@ -82,7 +82,7 @@ estiInfoFile <- function(info=NULL, truthNr=NULL, obsNr=NULL, ending = TRUE) {
   stopifnot(!any(is.na(obsNr)))
   fileName <- sprintf("truth%04dobs%04dinfo", truthNr, obsNr)
   if (isTRUE(ending)) {
-    fileName <- paste0(fileName, ".csv")
+    fileName <- paste0(fileName, ".json")
   } else if (is.character(ending)) {
     fileName <- paste0(fileName, ending)
   }
