@@ -16,7 +16,7 @@ getUniqueEntriesForEval <- function(dbPath) {
   truthFiles <- unique(unlist(lapply(
     file.path(modelPaths, "truth"),
     list.files,
-    pattern = "truth\\d+\\.rds",
+    pattern = "truth\\d+\\.",
     full.names = FALSE, recursive = FALSE)))
   truthNrs <-
     truthFiles |>
