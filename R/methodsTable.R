@@ -34,6 +34,7 @@ getMethodTable <- function(dbPath, methodTablePaths, addSlurm = TRUE, baseName =
     lapply(
       methodTablePaths,
       readr::read_csv,
+      col_select = c("model" , "obs", "methodFile"),
       col_types = colTypes
     ) |>
     bind_rows()
@@ -41,7 +42,7 @@ getMethodTable <- function(dbPath, methodTablePaths, addSlurm = TRUE, baseName =
   obsNames <- getObsNames(dbPath)
   methodTable <-
     methodTableRegex |>
-    mutate(methodBaseFile = methodNameFromMethodFile(dbPath, methodFile)) |>
+    mutate(methodBaseFile = methodNameFromMethodFile(dbPath, .data$methodFile)) |>
     mutate(model = lapply(.data$model, \(modeRegex) str_subset(models, modeRegex))) |>
     tidyr::unnest(.data$model) |>
     left_join(tibble(model = names(obsNames), obsName = obsNames), join_by("model")) |>
@@ -49,8 +50,6 @@ getMethodTable <- function(dbPath, methodTablePaths, addSlurm = TRUE, baseName =
     select(-"obsName") |>
     tidyr::unnest("obs") |>
     distinct()
-
-
 
   if (addSlurm) {
     slurmTimeTable <- loadSlurmTimeTable(dbPath)

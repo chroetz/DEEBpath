@@ -98,7 +98,7 @@ getNewAuto <- function(dbPath, autoId, autoRound) {
     }) |>
       bind_rows()
     if (NROW(meta) == 0) return(NULL)
-    scoreFiles <- getScoreFiles(path$eval, methods) # TODO: add methods arg
+    scoreFiles <- getScoreFiles(path$eval, methods)
     scores <-
       lapply(scoreFiles, \(sf) {
         scores <- readr::read_csv(sf, col_types = readr::cols())
@@ -128,5 +128,6 @@ initializeAuto <- function(dbPath, methodTablePaths, autoId) {
 
 #' @export
 isFirstAutoCall <- function(dbPath, autoId) {
-  !file.exists(file.path(autoIdDir(dbPath, autoId), "methods_BestCube_1.csv"))
+  dirs <- dir(file.path(autoIdDir(dbPath, autoId)))
+  !any(str_detect(dirs, "methods_BestCube"))
 }
