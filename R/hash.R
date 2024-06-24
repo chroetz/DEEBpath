@@ -6,6 +6,21 @@ nameWithHash <- function(name, lst) {
   return(nameWithHash)
 }
 
+#' @export
+removeHashFromName <- function(name, recursive = FALSE) {
+  name <- str_remove(name, "_[0-9a-f]{32}$")
+  if (recursive) {
+    len <- nchar(name)
+    for (i in seq_len(1e4)) {
+      name <- str_remove(name, "_[0-9a-f]{32}$")
+      newLen <- nchar(name)
+      if (all(len == newLen)) break
+      len <- newLen
+    }
+  }
+  return(name)
+}
+
 sortList <- function(lst, removePattern = NULL) {
   nms <- names(lst)
   if (is.null(nms)) return(lst)
