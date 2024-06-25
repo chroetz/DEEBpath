@@ -1,13 +1,16 @@
 #' @export
 getOpenTruthNrs <- function(
     dbPath,
-    truthNrFilter,
+    truthNrFilter = NULL,
     obsNr,
     model,
     methodName
 ) {
   paths <- getPaths(dbPath, model)
   methodEstiPath <- file.path(paths$esti, methodName)
+  if (is.null(truthNrFilter)) {
+    truthNrFilter <- getUniqueTruthNrs(dbPath, model)
+  }
   if (!dir.exists(methodEstiPath)) return(truthNrFilter)
   meta <- getMetaGeneric(
     methodEstiPath,
@@ -17,7 +20,3 @@ getOpenTruthNrs <- function(
   if (NROW(info) == 0) return(truthNrFilter)
   setdiff(truthNrFilter, info$truthNr)
 }
-
-
-
-

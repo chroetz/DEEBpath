@@ -1,7 +1,7 @@
 #' @export
 nameWithHash <- function(name, lst) {
   lst$name <- NULL
-  lst <- sortList(lst, removePattern = "^_")
+  lst <- normalizeList(lst, removePattern = "^_")
   nameWithHash <- paste0(name, "_", rlang::hash(lst))
   return(nameWithHash)
 }
@@ -21,20 +21,25 @@ removeHashFromName <- function(name, recursive = FALSE) {
   return(name)
 }
 
-sortList <- function(lst, removePattern = NULL) {
+normalizeList <- function(lst, removePattern = NULL) {
+  if (!is.list(lst)) return(normalizeType(lst))
   nms <- names(lst)
-  if (is.null(nms)) return(lst)
-  sel <- if (is.null(removePattern)) TRUE else !grepl(removePattern, nms)
-  nms <- sort(nms[sel])
-  resList <- lapply(nms, \(nm) {
-    if (is.list(lst[[nm]])) {
-      sortList(lst[[nm]], removePattern)
-    } else {
-      lst[[nm]]
-    }
-  })
-  names(lst) <- NULL
+  if (is.null(nms)) {
+    resList <- lapply(lst, normalizeList)
+  } else {
+    sel <- if (is.null(removePattern)) TRUE else !grepl(removePattern, nms)
+    nms <- sort(nms[sel])
+    resList <- lapply(nms, \(nm) {
+      normalizeList(lst[[nm]], removePattern)
+    })
+    names(lst) <- NULL
+    names(resList) <- nms
+  }
   attributes(resList) <- attributes(lst)
-  names(resList) <- nms
   return(resList)
+}
+
+normalizeType <- function(x) {
+  if (is.numeric(x)) return(as.double(x))
+  return(x)
 }

@@ -119,10 +119,25 @@ getNewAuto <- function(dbPath, autoId, autoRound) {
 
 
 #' @export
-initializeAuto <- function(dbPath, methodTablePaths, autoId) {
-  methodsTable <- getMethodTable(dbPath, methodTablePaths, addSlurm = FALSE)
-  filePath <- file.path(autoIdDir(dbPath, autoId), "methods.csv")
-  readr::write_csv(methodsTable, file = filePath)
+initializeAuto <- function(
+    dbPath,
+    methodInfo,
+    ...
+) {
+  moreInfo <- list(...)
+  autoId <- newAutoId(dbPath)
+  filePath <- file.path(autoIdDir(dbPath, autoId), "methodInfo.json")
+  DEEButil::writeJson(c(lst(dbPath, autoId), methodInfo, moreInfo), filePath)
+  return(autoId)
+}
+
+#' @export
+readAutoInfo <- function(
+    dbPath,
+    autoId
+) {
+  filePath <- file.path(autoIdDir(dbPath, autoId), "methodInfo.json")
+  DEEButil::readJson(filePath)
 }
 
 

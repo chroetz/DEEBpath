@@ -23,8 +23,12 @@ summaryDir <- function(dbPath) {
 }
 
 #' @export
-summaryTablePath <- function(dbPath) {
-  file.path(summaryDir(dbPath), "scores.csv")
+summaryTablePath <- function(dbPath, autoId = NULL) {
+  if (is.null(autoId)) {
+    file.path(summaryDir(dbPath), "scores.csv")
+  } else {
+    file.path(autoIdDir(dbPath, autoId), "scores.csv")
+  }
 }
 
 #' @export
@@ -42,13 +46,16 @@ getRanMethodOptsPath <- function(dbPath, model, method) {
 }
 
 #' @export
-getLogDir <- function(dbPath = NULL, relative = FALSE) {
+getLogDir <- function(dbPath = NULL, relative = FALSE, autoId = NULL) {
   stopifnot(is.logical(relative))
   stopifnot(length(relative) == 1)
-  if (relative) {
-    return("_log")
+  if (!is.null(autoId)) {
+    relativePath <- paste0("_hyper/auto/", autoId,"/_log")
+  } else {
+    relativePath <- "_log"
   }
+  if (relative) return(relativePath)
   stopifnot(is.character(dbPath))
   stopifnot(length(dbPath) == 1)
-  normalizePath(file.path(dbPath, "_log"), mustWork = FALSE)
+  normalizePath(file.path(dbPath, relativePath), mustWork = FALSE)
 }
