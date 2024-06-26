@@ -59,3 +59,19 @@ getLogDir <- function(dbPath = NULL, relative = FALSE, autoId = NULL) {
   stopifnot(length(dbPath) == 1)
   normalizePath(file.path(dbPath, relativePath), mustWork = FALSE)
 }
+
+
+#' @export
+getCmdDir <- function(dbPath = NULL, autoId = NULL, relative = FALSE) {
+  stopifnot(is.logical(relative))
+  stopifnot(length(relative) == 1)
+  if (!is.null(autoId)) {
+    relativePath <- paste0("_hyper/auto/", autoId,"/_cmd")
+  } else {
+    relativePath <- "_cmd"
+  }
+  if (relative) return(relativePath)
+  stopifnot(is.character(dbPath))
+  stopifnot(length(dbPath) == 1)
+  normalizePath(file.path(dbPath, relativePath), mustWork = FALSE)
+}
