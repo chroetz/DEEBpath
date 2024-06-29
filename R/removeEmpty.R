@@ -10,10 +10,10 @@ removeEmptyMethodFolders <- function(dbPath, removeNonCsvFolders = FALSE) {
     allDirs <- list.files(paths$esti, full.names = TRUE, include.dirs = TRUE)
     for (dir in allDirs) {
       if (!dir.exists(dir)) next
-      files <- list.files(dir)
+      files <- list.files(dir, full.names=TRUE)
       isEmpty <- file.size(files) == 0
       if (sum(isEmpty) > 0) {
-        cat("Removing empty files:", paste0(files[isEmpty], collapse=","), "\n")
+        cat("Removing empty files:", paste0(basename(files[isEmpty]), collapse=","), "\n")
         file.remove(files[isEmpty])
         files <- files[!isEmpty]
       }
