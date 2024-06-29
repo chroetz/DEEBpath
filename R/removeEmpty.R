@@ -11,6 +11,12 @@ removeEmptyMethodFolders <- function(dbPath, removeNonCsvFolders = FALSE) {
     for (dir in allDirs) {
       if (!dir.exists(dir)) next
       files <- list.files(dir)
+      isEmpty <- isTRUE(file.size(files) == 0)
+      if (sum(isEmpty) > 0) {
+        cat("Removing empty files:", paste0(files[isEmpty], collapse=","), "\n")
+        file.remove(files[isEmpty])
+        files <- files[!isEmpty]
+      }
       if (length(files) == 0) {
         cat("Folder", dir, "is empty. Removing... ")
         unlink(dir, recursive = TRUE, force = TRUE)
