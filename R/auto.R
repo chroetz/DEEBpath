@@ -1,10 +1,12 @@
 #' @export
-newAutoId <- function(dbPath) {
+newAutoId <- function(dbPath, identifyingObject = NULL) {
   autoBasePath <- autoDir(dbPath)
   autoPath <-
-    autoBasePath |>
-    tempfile(pattern = "", tmpdir = _) |>
-    normalizePath(winslash = "/", mustWork=FALSE)
+    DEEButil::getUniqueFileName(
+      dirPath = autoBasePath,
+      timeStamp = TRUE,
+      identifyingObject = identifyingObject,
+      fullPath = TRUE)
   dir.create(autoPath, recursive=TRUE)
   return(basename(autoPath))
 }
@@ -125,7 +127,7 @@ initializeAuto <- function(
     ...
 ) {
   moreInfo <- list(...)
-  autoId <- newAutoId(dbPath)
+  autoId <- newAutoId(dbPath, identifyingObject = c(methodInfo, moreInfo))
   filePath <- file.path(autoIdDir(dbPath, autoId), "methodInfo.json")
   DEEButil::writeJson(c(lst(dbPath, autoId), methodInfo, moreInfo), filePath)
   return(autoId)
