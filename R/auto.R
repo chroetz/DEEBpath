@@ -8,7 +8,13 @@ newAutoId <- function(dbPath, identifyingObject = NULL) {
       identifyingObject = identifyingObject,
       fullPath = TRUE)
   dir.create(autoPath, recursive=TRUE)
-  return(basename(autoPath))
+  autoId <- basename(autoPath)
+  stopifnot(typeof(autoId) == "character")
+  stopifnot(length(autoId) == 1)
+  stopifnot(!is.na(autoId))
+  stopifnot(nchar(autoId) > 0)
+  stopifnot(hasValue(autoId))
+  return(autoId)
 }
 
 
