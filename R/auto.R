@@ -106,18 +106,7 @@ getNewAuto <- function(dbPath, autoId, autoRound) {
     }) |>
       bind_rows()
     if (NROW(meta) == 0) return(NULL)
-    scoreFiles <- getScoreFiles(path$eval, methods)
-    scores <-
-      lapply(scoreFiles, \(sf) {
-        scores <- readr::read_csv(sf, col_types = readr::cols())
-        scores[c("method", "truthNr", "obsNr", "taskNr")]
-      }) |>
-      bind_rows()
-    if (NROW(scores) != 0) {
-      unevaled <- meta |> anti_join(scores, by = c("truthNr", "obsNr", "taskNr", "method"))
-    } else {
-      unevaled <- meta
-    }
+    unevaled <- meta
     unevaled$model <- model
     unevaled
   }) |>
