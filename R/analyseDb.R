@@ -68,19 +68,21 @@ getUniqueTruthNrs <- function(
 ) {
   models <-  getModels(dbPath)
   if (!is.null(modelFilter)) models <- intersect(models, modelFilter)
+
   modelPaths <- file.path(dbPath, models)
-  truthFiles <- unique(unlist(lapply(
-    file.path(modelPaths, "truth"),
-    list.files,
-    pattern = "obs\\d+truth\\d+\\.csv",
-    full.names = FALSE, recursive = FALSE)))
+  obsFiles <- unique(unlist(lapply(
+    models,
+    \(model) {
+      paths <- getPaths(dbPath, model)
+      list.files(paths$obs, pattern = "truth\\d+obs\\d+\\.csv", full.names = FALSE, recursive = FALSE)
+    })))
   truthNrs <-
-    truthFiles |>
+    obsFiles |>
     str_extract("(?<=truth)(\\d+)") |>
     as.integer()
   if (!is.null(obsNrFilter)) {
     obsNrs <-
-      truthFiles |>
+      obsFiles |>
       str_extract("(?<=obs)(\\d+)") |>
       as.integer()
     truthNrs <- truthNrs[obsNrs %in% obsNrFilter]
