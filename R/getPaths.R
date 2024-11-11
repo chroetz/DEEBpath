@@ -55,7 +55,7 @@ getRanMethodOptsPath <- function(dbPath, model, method) {
   optsFilePaths <- list.files(dirPath, "^Opts_HyperParms.*\\.json$", full.names=TRUE)
 
   if (length(optsFilePaths) != 1) {
-    warning(
+    stop(
       sprintf(
         "Found %d Opts files (db: %s, model: %s, method: %s)",
         length(optsFilePaths), dbPath, model, method
