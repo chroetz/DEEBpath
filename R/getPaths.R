@@ -39,9 +39,30 @@ summaryHyperPath <- function(dbPath, model, methodBase) {
 
 #' @export
 getRanMethodOptsPath <- function(dbPath, model, method) {
+
+  stopifnot(length(dbPath) == 1)
+  stopifnot(length(model) == 1)
+  stopifnot(length(method) == 1)
+  stopifnot(is.character(dbPath))
+  stopifnot(is.character(model))
+  stopifnot(is.character(method))
+  stopifnot(!is.na(dbPath))
+  stopifnot(!is.na(model))
+  stopifnot(!is.na(method))
+
   paths <- getPaths(dbPath, model)
   dirPath <- file.path(paths$esti, method)
   optsFilePaths <- list.files(dirPath, "^Opts_HyperParms.*\\.json$", full.names=TRUE)
+
+  if (length(optsFilePaths) != 1) {
+    warning(
+      sprintf(
+        "Found %d Opts files (db: %s, model: %s, method: %s)",
+        length(optsFilePaths), dbPath, model, method
+      ),
+      immediate.=TRUE)
+  }
+
   return(optsFilePaths)
 }
 
