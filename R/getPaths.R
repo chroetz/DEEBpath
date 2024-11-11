@@ -59,8 +59,7 @@ getRanMethodOptsPath <- function(dbPath, model, method) {
       sprintf(
         "Found %d Opts files (db: %s, model: %s, method: %s)",
         length(optsFilePaths), dbPath, model, method
-      ),
-      immediate.=TRUE)
+      ))
   }
 
   return(optsFilePaths)
